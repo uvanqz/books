@@ -22,7 +22,7 @@ class UserRegistrationAPIView(APIView):
 class UserLoginAPIView(APIView):
     permission_classes = [AllowAny]
 
-    @swagger_auto_schema(request_даbody=LoginSerializer)
+    @swagger_auto_schema(request_body=LoginSerializer)
     def post(self, request):
         username = request.data.get("username")
         password = request.data.get("password")

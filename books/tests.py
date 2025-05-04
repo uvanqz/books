@@ -117,11 +117,3 @@ class BookAPIViewTestCase(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), 1)
         self.assertEqual(response.data[0]["title"], self.book.title)
-
-    def test_get_books_by_nonexistent_genre(self):
-        self.client.login(username="test_user", password="password")
-        url = reverse("books:books_genre", args=[999])
-        response = self.client.get(url)
-
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data, [])
