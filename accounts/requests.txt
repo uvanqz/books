@@ -1,0 +1,222 @@
+1. venv
+python3 -m venv venv
+source venv/bin/activate
+
+2. +файл requirements.txt
+
+3. sudo apt update
+pip install --upgrade pip
+pip install -r requirements.txt
+pip install drf_yasg
+
+4. создание проекта
+django-admin startproject core .
+python manage.py startapp accounts
+
+
+--- ACCOUNTS ---
+
+- 1. +файл accounts/models.py
+
+2. +файл accounts/serializers.py
+
+3. +файл accounts/views.py
+
+4. +файл accounts/urls.py
+
+- 5. +файл accounts/admin.py
+
+6. файл core/urls.py
+from django.urls import path, include
+path('accounts/', include(('accounts.urls', 'accounts'))),
+
+7. файл core/settings.py
+
+в installed apps:
+'accounts',
+'rest_framework', 
+
+в templates
+'DIRS': [BASE_DIR / 'templates'],
+
+в конце файла
+REST_FRAMEWORK
+
+8. миграции
+python manage.py makemigrations
+python manage.py migrate
+
+9. создание супер пользователя
+python manage.py createsuperuser
+
+10. запуск 
+python manage.py runserver
+
+11. DBeaver
+Файл → Создать → Новое подключение.
+В списке бд выбрать SQLite.
+Указать путь до файла db.sqlite3
+
+12. API
+
+accounts requests for Api:
+--register
+http://127.0.0.1:8000/accounts/register/
+{
+  "username": "example_user",
+  "password": "example_password",
+  "first_name": "example_first_name",
+  "last_name": "example_last_name",
+  "email": "example@example.com"
+}
+
+
+--login
+http://127.0.0.1:8000/accounts/login/
+{
+  "username": "example_user",
+  "password": "example_password"
+}
+
+--logout
+http://127.0.0.1:8000/accounts/logout/
+
+
+--- BOOKS ---
+
+1. создание проекта
+python manage.py startapp books
+
+2. +файл books/models.py
+Если поле необязательное: blank=True, null=True.
+
+3. draw.io
+https://drive.google.com/file/d/1BmDHx-sWIyymsgSeF2T4be5_Wz1s-y56/view?usp=sharing
+
+4. +файл books/serializers.py
+
+5. +файл books/views.py
+кроме PageView
+
+6. +файл books/permissions.py
+
+7. +файл books/urls.py
+
+8. +файл books/admin.py
+
+9. файл core/urls.py
+path("books/", include("books.urls")),
+
+10. файл core/settings.py
+
+в INSTALLED_APPS:
+'books',
+
+11. API
+--all books
+http://127.0.0.1:8000/books/list
+
+--detail
+http://127.0.0.1:8000/books/detail/1
+
+--create
+http://127.0.0.1:8000/books/create/
+
+{
+    "title": "Название 1",
+    "type": "comic",
+    "volume": 2000,
+    "year": 2023,
+    "description": "Описание 1", 
+    "genres": [1],
+    "authors": [1],
+    "owner": 1
+}
+
+--genre
+http://127.0.0.1:8000/books/genre/2/
+
+
+--- SWAGGER ---
+
+1. файл core/settings.py
+INSTALLED_APPS:
+"drf_yasg",
+
+в конце файла SWAGGER_SETTINGS
+
+2. файл core/urls.py
+
+from rest_framework.permissions import AllowAny
+from drf_yasg import openapi
+from drf_yasg.views import get_schema_view
+
+schema_view = get_schema_view.......
+
+path(
+        "swagger/",
+        schema_view.with_ui("swagger", cache_timeout=0),
+        name="schema-swagger",
+    ),
+
+
+--- TESTS ---
+
+1. +файл accounts/tests.py
+python manage.py test accounts.tests
+
+2. команды
+
+pip install coverage
+
+coverage run manage.py test
+
+coverage report
+
+3. +файл books/tests.py
+python manage.py test books.tests
+
+ЛИНТЕР
+
+1. pip install flake8
+flake8
+
+2. +файл .flake8
+[flake8]
+exclude = venv/*
+max-line-length = 138
+
+3. pip install black
+black .
+
+
+--- всё для моделей ---
+
+- типы данных -
+Короткий текст: name = models.CharField(max_length=100)
+Длинный текст: 	description = models.TextField()
+Целое число: age = models.IntegerField()
+Только положительное число: stock = models.PositiveIntegerField()
+Число с плавающей точкой: weight = models.FloatField()
+Логическое значение: is_active = models.BooleanField(default=True)
+Дата: birth_date = models.DateField()
+Дата и время: created_at = models.DateTimeField(auto_now_add=True)
+Email-адрес: email = models.EmailField()
+URL: website = models.URLField()
+
+- типы связей -
+user = models.OneToOneField(User, on_delete=models.CASCADE)
+country = models.ForeignKey("Country", on_delete=models.SET_NULL, null=True)
+friends = models.ManyToManyField("self", blank=True)
+
+OneToOneField: один к одному — профиль принадлежит только одному пользователю.
+ForeignKey: многие к одному — профиль может принадлежать одной стране.
+ManyToManyField: многие ко многим — пользователь может быть "друзьями" с другими пользователями.
+
+- доп -
+
+on_delete=models.CASCADE — удалит объект при удалении связанного.
+blank=True — можно не указывать в форме.
+null=True — можно хранить NULL в БД.
+auto_now_add=True — записывается только при создании.
+auto_now=True — обновляется при каждом сохранении.
