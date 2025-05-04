@@ -3,6 +3,9 @@ python3 -m venv venv
 source venv/bin/activate
 
 2. +файл requirements.txt
+asgiref==3.6.0
+Django==4.2.1
+sqlparse==0.4.4
 
 3. sudo apt update
 pip install --upgrade pip
@@ -16,48 +19,43 @@ python manage.py startapp accounts
 
 --- ACCOUNTS ---
 
-- 1. +файл accounts/models.py
+1. +файл accounts/serializers.py
 
-2. +файл accounts/serializers.py
+2. +файл accounts/views.py
 
-3. +файл accounts/views.py
+3. +файл accounts/urls.py
 
-4. +файл accounts/urls.py
-
-- 5. +файл accounts/admin.py
-
-6. файл core/urls.py
+4. файл core/urls.py
 from django.urls import path, include
 path('accounts/', include(('accounts.urls', 'accounts'))),
 
-7. файл core/settings.py
+5. файл core/settings.py
 
 в installed apps:
 'accounts',
 'rest_framework', 
 
-в templates
-'DIRS': [BASE_DIR / 'templates'],
-
 в конце файла
-REST_FRAMEWORK
+REST_FRAMEWORK = {
+    "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
+}
 
-8. миграции
+6. миграции
 python manage.py makemigrations
 python manage.py migrate
 
-9. создание супер пользователя
+7. создание супер пользователя
 python manage.py createsuperuser
 
-10. запуск 
+8. запуск 
 python manage.py runserver
 
-11. DBeaver
+9. DBeaver
 Файл → Создать → Новое подключение.
 В списке бд выбрать SQLite.
 Указать путь до файла db.sqlite3
 
-12. API
+10. API
 
 accounts requests for Api:
 --register
@@ -96,23 +94,20 @@ https://drive.google.com/file/d/1BmDHx-sWIyymsgSeF2T4be5_Wz1s-y56/view?usp=shari
 4. +файл books/serializers.py
 
 5. +файл books/views.py
-кроме PageView
 
-6. +файл books/permissions.py
+6. +файл books/urls.py
 
-7. +файл books/urls.py
+7. +файл books/admin.py
 
-8. +файл books/admin.py
-
-9. файл core/urls.py
+8. файл core/urls.py
 path("books/", include("books.urls")),
 
-10. файл core/settings.py
+9. файл core/settings.py
 
 в INSTALLED_APPS:
 'books',
 
-11. API
+10. API
 --all books
 http://127.0.0.1:8000/books/list
 
@@ -142,8 +137,6 @@ http://127.0.0.1:8000/books/genre/2/
 1. файл core/settings.py
 INSTALLED_APPS:
 "drf_yasg",
-
-в конце файла SWAGGER_SETTINGS
 
 2. файл core/urls.py
 
