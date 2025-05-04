@@ -1,3 +1,4 @@
+from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -28,7 +29,7 @@ class BookListAPIView(APIView):
 
 class BookDetailAPIView(APIView):
     def get(self, request, pk):
-        book = Book.objects.get(pk=pk)
+        book = get_object_or_404(Book, pk=pk)
         serializer = BookSerializer(book)
         return Response(serializer.data)
 
@@ -36,7 +37,7 @@ class BookDetailAPIView(APIView):
     def put(self, request, pk):
         self.permission_classes = [IsAdminUser]
         self.check_permissions(request)
-        book = Book.objects.get(pk=pk)
+        book = get_object_or_404(Book, pk=pk)
         serializer = BookSerializer(book, data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -46,7 +47,7 @@ class BookDetailAPIView(APIView):
     def delete(self, request, pk):
         self.permission_classes = [IsAdminUser]
         self.check_permissions(request)
-        book = Book.objects.get(pk=pk)
+        book = get_object_or_404(Book, pk=pk)
         book.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
